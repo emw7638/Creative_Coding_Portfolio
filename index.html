@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emma's Creative Coding Desktop</title>
+
+  <!-- LIBRARIES -->
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.11/lib/p5.js"></script>
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+
+  <!-- STYLES -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="desktop">
+  <!-- DESKTOP BACKGROUND -->
+  <div class="desktop-glow desktop-glow-left"></div>
+  <div class="desktop-glow desktop-glow-right"></div>
+
+  <!-- DESKTOP ICONS -->
+  <aside class="desktop-icons" aria-label="Desktop shortcuts">
+    <a class="desktop-icon" href="about.html">
+      <span class="desktop-icon-image">TXT</span>
+      <span class="desktop-icon-label">about.txt</span>
+    </a>
+
+    <a class="desktop-icon" href="pages/p1.html">
+      <span class="desktop-icon-image">EXE</span>
+      <span class="desktop-icon-label">project_01.exe</span>
+    </a>
+
+    <a class="desktop-icon" href="pages/p2.html">
+      <span class="desktop-icon-image">EXE</span>
+      <span class="desktop-icon-label">project_02.exe</span>
+    </a>
+
+    <a class="desktop-icon" href="pages/p3.html">
+      <span class="desktop-icon-image">EXE</span>
+      <span class="desktop-icon-label">project_03.exe</span>
+    </a>
+  </aside>
+
+  <!-- WINDOWS -->
+  <main class="desktop-stage">
+    <!-- ABOUT WINDOW -->
+    <section class="window info-window" id="about" data-width="680" data-height="460" data-url="about.html">
+      <div class="title-bar">
+        <div class="title-bar-text">about.txt</div>
+        <div class="title-bar-buttons" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="window-content">
+        <p class="window-label">Welcome</p>
+        <p>
+          Hi, I'm Emma Wachtel. I am an Integrated Design and Media student at
+          New York University.
+        </p>
+        <p>
+          I'm passionate about graphic design, UX/UI, and digital illustration.
+          I love blending creativity with precision, focusing on the details
+          that make each project feel unique. Much of my work is inspired by my
+          experiences and interests.
+        </p>
+        <p>
+          This portfolio shows some of my creative coding sketches and gives a
+          look into how I approach making interactive visual work.
+        </p>
+        <a class="text-link" href="about.html">Read more</a>
+      </div>
+    </section>
+
+    <!-- PROJECT 1 WINDOW -->
+    <section class="window project-window" id="p1" data-width="296" data-height="236" data-url="pages/p1.html">
+      <div class="title-bar">
+        <div class="title-bar-text">project_01.exe</div>
+        <div class="title-bar-buttons" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="window-content">
+        <div class="preview-canvas" id="sketch1"></div>
+      </div>
+    </section>
+
+    <!-- PROJECT 2 WINDOW -->
+    <section class="window project-window" id="p2" data-width="296" data-height="236" data-url="pages/p2.html">
+      <div class="title-bar">
+        <div class="title-bar-text">project_02.exe</div>
+        <div class="title-bar-buttons" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="window-content">
+        <div class="preview-canvas" id="sketch2"></div>
+      </div>
+    </section>
+
+    <!-- PROJECT 3 WINDOW -->
+    <section class="window project-window" id="p3" data-width="296" data-height="236" data-url="pages/p3.html">
+      <div class="title-bar">
+        <div class="title-bar-text">project_03.exe</div>
+        <div class="title-bar-buttons" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="window-content">
+        <div class="preview-canvas" id="sketch3"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script src="sketches/sketch1.js"></script>
+  <script src="sketches/sketch2.js"></script>
+  <script src="sketches/sketch3.js"></script>
+  <script>
+    let topWindowZ = 10;
+    let activeWindow = null;
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+    let pointerStartX = 0;
+    let pointerStartY = 0;
+    let movedEnoughToDrag = false;
+
+    const CLICK_THRESHOLD = 6;
+
+    // WINDOW SETUP
+    window.addEventListener("load", function () {
+      const windows = document.querySelectorAll(".desktop .window");
+      const savedPositions = [
+        { left: 120, top: 50 },
+        { left: 840, top: 70 },
+        { left: 840, top: 340 },
+        { left: 510, top: 390 }
+      ];
+
+      windows.forEach(function (win, index) {
+        const width = Number(win.dataset.width || 320);
+        const height = Number(win.dataset.height || 240);
+        const fallback = savedPositions[index] || { left: 120 + index * 40, top: 120 + index * 32 };
+
+        win.style.width = width + "px";
+        win.style.height = height + "px";
+        win.style.left = clampPosition(fallback.left, width, window.innerWidth) + "px";
+        win.style.top = clampPosition(fallback.top, height, window.innerHeight) + "px";
+        bringToFront(win);
+      });
+    });
+
+    // WINDOW STACKING
+    function bringToFront(win) {
+      topWindowZ += 1;
+      win.style.zIndex = topWindowZ;
+    }
+
+    // DRAGGING
+    document.querySelectorAll(".desktop .title-bar").forEach(function (bar) {
+      bar.addEventListener("mousedown", function (event) {
+        activeWindow = bar.parentElement;
+        bringToFront(activeWindow);
+
+        dragOffsetX = event.clientX - activeWindow.offsetLeft;
+        dragOffsetY = event.clientY - activeWindow.offsetTop;
+        pointerStartX = event.clientX;
+        pointerStartY = event.clientY;
+        movedEnoughToDrag = false;
+
+        event.preventDefault();
+      });
+    });
+
+    document.addEventListener("mousemove", function (event) {
+      if (!activeWindow) {
+        return;
+      }
+
+      const nextLeft = event.clientX - dragOffsetX;
+      const nextTop = event.clientY - dragOffsetY;
+      const maxTop = window.innerHeight - activeWindow.offsetHeight;
+
+      activeWindow.style.left = clampPosition(nextLeft, activeWindow.offsetWidth, window.innerWidth) + "px";
+      activeWindow.style.top = Math.min(Math.max(nextTop, 0), Math.max(maxTop, 0)) + "px";
+
+      if (
+        Math.abs(event.clientX - pointerStartX) > CLICK_THRESHOLD ||
+        Math.abs(event.clientY - pointerStartY) > CLICK_THRESHOLD
+      ) {
+        movedEnoughToDrag = true;
+      }
+    });
+
+    document.addEventListener("mouseup", function () {
+      activeWindow = null;
+    });
+
+    // WINDOW LINKS
+    document.querySelectorAll(".desktop .window").forEach(function (win) {
+      win.addEventListener("mousedown", function () {
+        bringToFront(win);
+      });
+
+      win.addEventListener("click", function (event) {
+        if (movedEnoughToDrag) {
+          movedEnoughToDrag = false;
+          return;
+        }
+
+        const isLink = event.target.closest("a");
+        if (isLink) {
+          return;
+        }
+
+        const url = win.dataset.url;
+        if (url) {
+          window.location.href = url;
+        }
+      });
+    });
+
+    // HELPER
+    function clampPosition(value, width, maxWidth) {
+      return Math.min(Math.max(value, 0), Math.max(maxWidth - width, 0));
+    }
+  </script>
+</body>
+</html>
