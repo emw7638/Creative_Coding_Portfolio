@@ -179,6 +179,14 @@ body.desktop {
   text-transform: uppercase;
 }
 
+.window-content .about-welcome {
+  margin: 0 0 14px;
+  font-family: "Arimo", Arial, sans-serif;
+  font-size: clamp(1.9rem, 3vw, 2.8rem);
+  line-height: 1;
+  color: var(--text-main);
+}
+
 .intro-content h1,
 .page-copy h1,
 .window-content h2 {
@@ -252,6 +260,18 @@ body.desktop {
   border-radius: 0;
   background: #ffffff;
   line-height: 0;
+}
+
+#p1 .preview-canvas {
+  aspect-ratio: 4 / 3;
+}
+
+#p2 .preview-canvas {
+  aspect-ratio: 13 / 9;
+}
+
+#p3 .preview-canvas {
+  aspect-ratio: 1 / 1;
 }
 
 .window-nav {
