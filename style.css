@@ -67,6 +67,7 @@ body.desktop {
 .desktop-stage {
   position: relative;
   min-height: 100vh;
+  z-index: 3;
 }
 
 .desktop-icons {
@@ -271,6 +272,10 @@ body.desktop {
 }
 
 #p3 .preview-canvas {
+  aspect-ratio: 1 / 1;
+}
+
+#p4 .preview-canvas {
   aspect-ratio: 1 / 1;
 }
 

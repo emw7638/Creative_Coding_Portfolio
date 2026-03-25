@@ -43,6 +43,11 @@
       <span class="desktop-icon-image">EXE</span>
       <span class="desktop-icon-label">Aura Gradient</span>
     </a>
+
+    <a class="desktop-icon" href="pages/p4.html">
+      <span class="desktop-icon-image">EXE</span>
+      <span class="desktop-icon-label">Truchet Tiles</span>
+    </a>
   </aside>
 
   <!-- WINDOWS -->
@@ -125,12 +130,29 @@
         <div class="preview-canvas" id="sketch1"></div>
       </div>
     </section>
+
+    <!-- PROJECT 4 WINDOW -->
+    <section class="window project-window" id="p4" data-width="280" data-height="312" data-url="pages/p4.html">
+      <div class="title-bar">
+        <div class="title-bar-text">Truchet Tiles</div>
+        <div class="title-bar-buttons" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="window-content">
+        <div class="preview-canvas" id="sketch4"></div>
+      </div>
+    </section>
   </main>
 
   <!-- SCRIPTS -->
   <script src="sketches/sketch1.js"></script>
   <script src="sketches/sketch2.js"></script>
   <script src="sketches/sketch3.js"></script>
+  <script src="sketches/sketch4.js"></script>
   <script>
     let topWindowZ = 10;
     let activeWindow = null;
@@ -149,7 +171,8 @@
         { left: 120, top: 50 },
         { left: 840, top: 70 },
         { left: 840, top: 340 },
-        { left: 510, top: 390 }
+        { left: 510, top: 390 },
+        { left: 260, top: 520 }
       ];
 
       windows.forEach(function (win, index) {
